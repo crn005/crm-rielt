@@ -1,5 +1,5 @@
 // KanbanBoard component is the main component that holds all the columns and cards.
-import { act, useMemo, useState } from 'react'
+import {  useMemo, useState } from 'react'
 import PlusIcon from '../icons/PlusIcon'
 import { Column, Id, Task } from '../types'
 import ColumnContainer from './ColumnContainer'

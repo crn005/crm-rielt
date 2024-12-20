@@ -20,7 +20,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
 		listeners,
 		transform,
 		transition,
-		isDragging,
+/* 		isDragging, */
 	} = useSortable({
 		id: task.id,
 		data: {
