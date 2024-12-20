@@ -2,14 +2,15 @@ import { useMemo, useState } from 'react'
 import PlusIcon from '../icons/PlusIcon'
 import { Column, Id } from '../types'
 import ColumnContainer from './ColumnContainer'
-import { DndContext, DragStartEvent } from '@dnd-kit/core'
+import { DndContext, DragOverlay, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
+import { createPortal } from 'react-dom'
 
 function KanbanBoard() {
 	const [columns, setColumns] = useState<Column[]>([])
 	const columnsId = useMemo(() => columns.map(col => col.id), [columns])
 
-  const [activeColumn, setActiveColumn] = useState<Column | null>(null)
+	const [activeColumn, setActiveColumn] = useState<Column | null>(null)
 
 	console.log(columns)
 
@@ -30,14 +31,13 @@ function KanbanBoard() {
 		setColumns(filteredColumns)
 	}
 
-  function onDragStart(event: DragStartEvent) {
-    console.log("DRAG STARTED", event);
-    if(event.active.data.current?.type === 'Column') {
-      setActiveColumn(event.active.data.current.column);
-      return
-    }
-    
-  }
+	function onDragStart(event: DragStartEvent) {
+		console.log('DRAG STARTED', event)
+		if (event.active.data.current?.type === 'Column') {
+			setActiveColumn(event.active.data.current.column)
+			return
+		}
+	}
 
 	return (
 		<div className='m-auto flex min-h-screen w-full items-center  overflow-x-auto overflow-y-hidden px-[40px]'>
@@ -63,8 +63,17 @@ function KanbanBoard() {
 						<PlusIcon /> Add Column
 					</button>
 				</div>
-
-
+				{createPortal(
+					<DragOverlay>
+						{activeColumn && (
+							<ColumnContainer
+								column={activeColumn}
+								deleteColumn={deleteColumn}
+							/>
+						)}
+					</DragOverlay>,
+					document.body
+				)}
 			</DndContext>
 		</div>
 	)
