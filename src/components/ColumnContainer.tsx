@@ -11,14 +11,22 @@ interface Props {
 	column: Column
 	deleteColumn: (id: Id) => void
 	updateColumn: (id: Id, title: string) => void
+  updateTask: (id: Id, content: string) => void
   createTask: (columnId: Id) => void
   tasks: Task[]
   deleteTask: (id: Id) => void
 }
 
 function ColumnContainer(props: Props) {
-	const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask } =
-		props
+	const {
+		column,
+		deleteColumn,
+		updateColumn,
+		createTask,
+		tasks,
+		deleteTask,
+		updateTask,
+	} = props
 
 	const [editMode, setEditMode] = useState(false)
 
@@ -100,17 +108,22 @@ function ColumnContainer(props: Props) {
 
 			{/* Column task container */}
 			<div className='flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto'>
-       {tasks.map((task) => (
-         <TaskCard key={task.id} task={task} deleteTask={deleteTask}/> 
-        
-         ))} 
-      </div>
+				{tasks.map(task => (
+					<TaskCard
+						key={task.id}
+						task={task}
+						deleteTask={deleteTask}
+						updateTask={updateTask}
+					/>
+				))}
+			</div>
 			{/* Column footer */}
-			<button className='flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black'
-      onClick={() => {
-        createTask(column.id);
-      }}
-      >
+			<button
+				className='flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black'
+				onClick={() => {
+					createTask(column.id)
+				}}
+			>
 				<PlusIcon /> Add Task
 			</button>
 		</div>

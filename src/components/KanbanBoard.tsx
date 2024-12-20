@@ -98,6 +98,15 @@ function KanbanBoard() {
 		setTasks(newTasks)
 	}
 
+	function updateTask(id: Id, content: string){
+		const newTasks = tasks.map(task =>{
+			if(task.id != id) return task;
+			return {...task, content}
+		});
+		setTasks(newTasks)
+	}
+
+
 	return (
 		<div className='m-auto flex min-h-screen w-full items-center  overflow-x-auto overflow-y-hidden px-[40px]'>
 			<DndContext
@@ -116,6 +125,7 @@ function KanbanBoard() {
 									updateColumn={updateColumn}
 									createTask={createTask}
 									deleteTask={deleteTask}
+									updateTask={updateTask}
 									tasks={tasks.filter(task => task.columnId === col.id)}
 								/>
 							))}
@@ -139,6 +149,7 @@ function KanbanBoard() {
 								updateColumn={updateColumn}
 								createTask={createTask}
 								deleteTask={deleteTask}
+								updateTask={updateTask}
 								tasks={tasks.filter(task => task.columnId === activeColumn.id)}
 							/>
 						)}
