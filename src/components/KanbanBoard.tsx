@@ -6,6 +6,7 @@ import ColumnContainer from './ColumnContainer'
 import {
 	DndContext,
 	DragEndEvent,
+	DragOverEvent,
 	DragOverlay,
 	DragStartEvent,
 	PointerSensor,
@@ -50,7 +51,9 @@ function KanbanBoard() {
 
 	function deleteColumn(id: Id) {
 		const filteredColumns = columns.filter(col => col.id !== id)
-		setColumns(filteredColumns)
+		setColumns(filteredColumns);
+		const newTasks  = tasks.filter(t => t.columnId !== id)
+		setTasks(newTasks)
 	}
 
 	function updateColumn(id: Id, title: string) {
@@ -75,6 +78,8 @@ function KanbanBoard() {
 	}
 
 	function onDragEnd(event: DragEndEvent) {
+		setActiveColumn(null)
+		setActiveTask(null)
 		const { active, over } = event
 		if (!over) return
 		const activeColumnId = active.id
@@ -114,12 +119,54 @@ function KanbanBoard() {
 		setTasks(newTasks)
 	}
 
+	function onDragOver(event: DragOverEvent) {
+		const { active, over } = event
+		if (!over) return
+
+		const activeId = active.id
+		const overId = over.id
+
+		if (activeId === overId) return
+
+		const isActiveATask = active.data.current?.type === 'Task'
+		const isOverATask = over.data.current?.type === 'Task'
+
+		if (!isActiveATask) return
+
+		// Im dropping a Task over another Task
+		if (isActiveATask && isOverATask) {
+			setTasks(tasks => {
+				const activeIndex = tasks.findIndex(t => t.id === activeId)
+				const overIndex = tasks.findIndex(t => t.id === overId)
+
+				tasks[activeIndex].columnId = tasks[overIndex].columnId
+
+				return arrayMove(tasks, activeIndex, overIndex)
+			})
+		}
+
+		const isOverAColumn = over.data.current?.type === 'Column'
+
+		// Im dropping a Task over a Column
+
+		if (isOverATask && isOverAColumn) {
+			setTasks(tasks => {
+				const activeIndex = tasks.findIndex(t => t.id === activeId)
+
+				tasks[activeIndex].columnId = overId
+
+				return arrayMove(tasks, activeIndex, activeIndex)
+			})
+		}
+	}
+
 	return (
 		<div className='m-auto flex min-h-screen w-full items-center  overflow-x-auto overflow-y-hidden px-[40px]'>
 			<DndContext
 				sensors={sensors}
 				onDragStart={onDragStart}
 				onDragEnd={onDragEnd}
+				onDragOver={onDragOver}
 			>
 				<div className='m-auto flex gap-4'>
 					<div className='flex gap-4'>
@@ -160,7 +207,13 @@ function KanbanBoard() {
 								tasks={tasks.filter(task => task.columnId === activeColumn.id)}
 							/>
 						)}
-						{activeTask && <TaskCard task={activeTask} deleteTask={deleteTask} updateTask={updateTask}/>}
+						{activeTask && (
+							<TaskCard
+								task={activeTask}
+								deleteTask={deleteTask}
+								updateTask={updateTask}
+							/>
+						)}
 					</DragOverlay>,
 					document.body
 				)}
