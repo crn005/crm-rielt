@@ -9,7 +9,10 @@ interface Props {
 }
 
 function ColumnContainer(props: Props) {
-	const { column, deleteColumn } = props
+	const { column, deleteColumn } = props;
+
+  
+  
 	const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
 		useSortable({
 			id: column.id,
