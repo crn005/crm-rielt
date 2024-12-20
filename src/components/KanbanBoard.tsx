@@ -9,6 +9,8 @@ function KanbanBoard() {
 	const [columns, setColumns] = useState<Column[]>([])
 	const columnsId = useMemo(() => columns.map(col => col.id), [columns])
 
+  const [activeColumn, setActiveColumn] = useState<Column | null>(null)
+
 	console.log(columns)
 
 	function createNewColumn() {
@@ -30,6 +32,10 @@ function KanbanBoard() {
 
   function onDragStart(event: DragStartEvent) {
     console.log("DRAG STARTED", event);
+    if(event.active.data.current?.type === 'Column') {
+      setActiveColumn(event.active.data.current.column);
+      return
+    }
     
   }
 
@@ -57,6 +63,8 @@ function KanbanBoard() {
 						<PlusIcon /> Add Column
 					</button>
 				</div>
+
+
 			</DndContext>
 		</div>
 	)
