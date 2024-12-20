@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import TrashIcon from '../icons/TrashIcon'
-import { Task } from '../types'
+import { Id, Task } from '../types'
 
 interface Props {
 	task: Task
+  deleteTask: (id: Id) => void
 }
 
-function TaskCard({ task }: Props) {
+function TaskCard({ task, deleteTask }: Props) {
 	const [mouseIsOver, setMouseIsOver] = useState(false)
 
 	return (
@@ -18,7 +19,7 @@ function TaskCard({ task }: Props) {
 			{task.content}
 
 			{mouseIsOver && (
-				<button className='stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded opacity-60 hover:opacity-100'>
+				<button onClick={() => {deleteTask(task.id)}} className='stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded opacity-60 hover:opacity-100'>
 					<TrashIcon />
 				</button>
 			)}

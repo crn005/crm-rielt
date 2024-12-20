@@ -8,9 +8,9 @@ import {
 	DragEndEvent,
 	DragOverlay,
 	DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
+	PointerSensor,
+	useSensor,
+	useSensors,
 } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { createPortal } from 'react-dom'
@@ -21,9 +21,9 @@ function KanbanBoard() {
 
 	const [tasks, setTasks] = useState<Task[]>([])
 
-	const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+	const [activeColumn, setActiveColumn] = useState<Column | null>(null)
 
-  const sensors = useSensors(
+	const sensors = useSensors(
 		useSensor(PointerSensor, {
 			activationConstraint: {
 				distance: 3, // 3px
@@ -50,13 +50,13 @@ function KanbanBoard() {
 		setColumns(filteredColumns)
 	}
 
-  function updateColumn(id: Id, title: string){
-    const newColumns = columns.map((col) =>{
-      if(col.id !== id) return col;
-      return {...col, title};
-    })
-    setColumns(newColumns)
-  }
+	function updateColumn(id: Id, title: string) {
+		const newColumns = columns.map(col => {
+			if (col.id !== id) return col
+			return { ...col, title }
+		})
+		setColumns(newColumns)
+	}
 
 	function onDragStart(event: DragStartEvent) {
 		console.log('DRAG STARTED', event)
@@ -67,13 +67,13 @@ function KanbanBoard() {
 	}
 
 	function onDragEnd(event: DragEndEvent) {
-		const { active, over } = event;
-		if (!over) return;
+		const { active, over } = event
+		if (!over) return
 		const activeColumnId = active.id
 		const overColumnId = over.id
-		if (activeColumnId === overColumnId) return;
+		if (activeColumnId === overColumnId) return
 
-		setColumns((columns) => {
+		setColumns(columns => {
 			const activeColumnIndex = columns.findIndex(
 				col => col.id === activeColumnId
 			)
@@ -83,16 +83,20 @@ function KanbanBoard() {
 		})
 	}
 
-function createTask(columnId: Id){
-	const newTask: Task = {
-		id: generateId(),
-		columnId,
-		content: `Task ${tasks.length + 1}`
+	function createTask(columnId: Id) {
+		const newTask: Task = {
+			id: generateId(),
+			columnId,
+			content: `Task ${tasks.length + 1}`,
+		}
+
+		setTasks([...tasks, newTask])
 	}
 
-	setTasks([...tasks, newTask])
-}
-
+	function deleteTask(id: Id) {
+		const newTasks = tasks.filter(task => task.id !== id);
+		setTasks(newTasks)
+	}
 
 	return (
 		<div className='m-auto flex min-h-screen w-full items-center  overflow-x-auto overflow-y-hidden px-[40px]'>
@@ -111,7 +115,8 @@ function createTask(columnId: Id){
 									deleteColumn={deleteColumn}
 									updateColumn={updateColumn}
 									createTask={createTask}
-									tasks={tasks.filter((task) => task.columnId === col.id)}
+									deleteTask={deleteTask}
+									tasks={tasks.filter(task => task.columnId === col.id)}
 								/>
 							))}
 						</SortableContext>
@@ -132,8 +137,9 @@ function createTask(columnId: Id){
 								column={activeColumn}
 								deleteColumn={deleteColumn}
 								updateColumn={updateColumn}
-								 createTask={createTask} 
-
+								createTask={createTask}
+								deleteTask={deleteTask}
+								tasks={tasks.filter(task => task.columnId === activeColumn.id)}
 							/>
 						)}
 					</DragOverlay>,
