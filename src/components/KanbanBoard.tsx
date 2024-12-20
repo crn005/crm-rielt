@@ -1,5 +1,5 @@
 // KanbanBoard component is the main component that holds all the columns and cards.
-import {  useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import PlusIcon from '../icons/PlusIcon'
 import { Column, Id, Task } from '../types'
 import ColumnContainer from './ColumnContainer'
@@ -14,6 +14,7 @@ import {
 } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { createPortal } from 'react-dom'
+import TaskCard from './TaskCard'
 
 function KanbanBoard() {
 	const [columns, setColumns] = useState<Column[]>([])
@@ -22,6 +23,8 @@ function KanbanBoard() {
 	const [tasks, setTasks] = useState<Task[]>([])
 
 	const [activeColumn, setActiveColumn] = useState<Column | null>(null)
+
+	const [activeTask, setActiveTask] = useState<Task | null>(null)
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -64,6 +67,11 @@ function KanbanBoard() {
 			setActiveColumn(event.active.data.current.column)
 			return
 		}
+
+		if (event.active.data.current?.type === 'Task') {
+			setActiveTask(event.active.data.current.task)
+			return
+		}
 	}
 
 	function onDragEnd(event: DragEndEvent) {
@@ -94,18 +102,17 @@ function KanbanBoard() {
 	}
 
 	function deleteTask(id: Id) {
-		const newTasks = tasks.filter(task => task.id !== id);
+		const newTasks = tasks.filter(task => task.id !== id)
 		setTasks(newTasks)
 	}
 
-	function updateTask(id: Id, content: string){
-		const newTasks = tasks.map(task =>{
-			if(task.id != id) return task;
-			return {...task, content}
-		});
+	function updateTask(id: Id, content: string) {
+		const newTasks = tasks.map(task => {
+			if (task.id != id) return task
+			return { ...task, content }
+		})
 		setTasks(newTasks)
 	}
-
 
 	return (
 		<div className='m-auto flex min-h-screen w-full items-center  overflow-x-auto overflow-y-hidden px-[40px]'>
@@ -153,6 +160,7 @@ function KanbanBoard() {
 								tasks={tasks.filter(task => task.columnId === activeColumn.id)}
 							/>
 						)}
+						{activeTask && <TaskCard task={activeTask} deleteTask={deleteTask} updateTask={updateTask}/>}
 					</DragOverlay>,
 					document.body
 				)}

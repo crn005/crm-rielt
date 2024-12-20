@@ -20,7 +20,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
 		listeners,
 		transform,
 		transition,
-/* 		isDragging, */
+		isDragging,
 	} = useSortable({
 		id: task.id,
 		data: {
@@ -38,6 +38,17 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
 	const toggleEditMode = () => {
 		setEditMode(prev => !prev)
 		setMouseIsOver(false)
+	}
+
+	if (isDragging) {
+		return (
+			<div
+				ref={setNodeRef}
+				style={style}
+				className='opacity-30 bg-mainBackgroundColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl border-2 border-rose-500 hover:ring-2  cursor-grab relative'
+			/>
+				
+		)
 	}
 
 	if (editMode) {
