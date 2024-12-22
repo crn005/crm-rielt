@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react-swc'
  */
 
 export default defineConfig({
-	base: '/crm-rielt/', // Название вашего репозитория
+	base: '/', // Название вашего репозитория
 	build: {
 		outDir: 'dist',
 	},
