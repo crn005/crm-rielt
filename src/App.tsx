@@ -4,7 +4,8 @@ import KanbanBoard from './components/KanbanBoard'
 function App() {
 	return (
 		<div>
-			<KanbanBoard />
+			{/* <KanbanBoard /> */}
+			<p>Привет. Это crm-rielt</p>
 		</div>
 	)
 }
