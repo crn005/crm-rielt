@@ -2,12 +2,15 @@ import { useState } from 'react'
 import './App.css'
 import { FieldConfig } from './components/DynamicField'
 import DynamicForm from './components/DynamicForm'
+import SearchPage from './pages/SearchPage'
+
 //import KanbanBoard from './components/KanbanBoard'
 
 const App: React.FC = () => {
 	const [categories, setCategories] = useState([]) // Состояние для хранения категорий
 	const [selectedCategory, setSelectedCategory] = useState(null)
   const [fields, setFields] = useState<Record<string, FieldConfig> | null>(null)
+	const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
 
 	const handleAddObject = async () => {
 		try {
@@ -28,6 +31,8 @@ const App: React.FC = () => {
 	}
 
 	const handleSubcategoryClick = async subcategory => {
+		console.log('Выбранная подкатегория:', subcategory);
+		setSelectedCategoryId(subcategory.id)
 		const locale = 'RU' // Здесь можно динамически задавать язык
 		try {
 			const response = await fetch(
@@ -85,7 +90,9 @@ const App: React.FC = () => {
 				<div>
 					<h3>Поля для заполнения</h3>
 					{/* <pre>{JSON.stringify(fields, null, 2)}</pre> */}
-					{fields && <DynamicForm fields={fields} />}
+					{fields && (
+						<DynamicForm fields={fields} categoryId={selectedCategoryId} />
+					)}
 				</div>
 			)}
 		</div>
