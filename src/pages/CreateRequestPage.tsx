@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import DynamicForm from '../components/DynamicForm'
+import { useEffect } from 'react'
 
 const CreateRequestPage: React.FC = () => {
 	const location = useLocation()
-	const { selectedSubcategories } = location.state as {
-		selectedSubcategories: number[]
+	const { selectedSubcategories } = location.state || {
+		selectedSubcategories: [],
 	}
 
-	const [fields, setFields] = useState<Record<string, any>>({})
-	const [isLoading, setIsLoading] = useState<boolean>(true)
-
 	useEffect(() => {
-		// Запрос на сервер с выбранными категориями
+		if (!selectedSubcategories || selectedSubcategories.length === 0) {
+			console.error('Нет выбранных категорий для создания заявки')
+			return
+		}
+
+		// Делаем запрос на сервер с переданными данными
 		const fetchFields = async () => {
 			try {
 				const response = await fetch('http://localhost:3005/request-fields', {
@@ -20,33 +21,28 @@ const CreateRequestPage: React.FC = () => {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ subcategories: selectedSubcategories }),
+					body: JSON.stringify({ selectedSubcategories }),
 				})
 
 				if (response.ok) {
 					const data = await response.json()
-					setFields(data)
+					console.log('Полученные данные полей:', data)
+					// Обработайте полученные данные здесь
 				} else {
-					console.error('Ошибка при загрузке полей:', response.statusText)
+					console.error('Ошибка при получении полей:', response.statusText)
 				}
 			} catch (error) {
 				console.error('Ошибка при выполнении запроса:', error)
-			} finally {
-				setIsLoading(false)
 			}
 		}
 
 		fetchFields()
 	}, [selectedSubcategories])
 
-	if (isLoading) {
-		return <p>Загрузка...</p>
-	}
-
 	return (
 		<div>
 			<h1>Создание заявки</h1>
-			<DynamicForm fields={fields} />
+			{/* Ваш интерфейс для работы с заявкой */}
 		</div>
 	)
 }

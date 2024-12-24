@@ -3,59 +3,50 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CategorySelector from '../components/CategorySelector'
 
+interface Subcategory {
+	id: number
+	name: string
+	fields: string
+}
+
 const SearchPage: React.FC = () => {
-	const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>(
-		[]
-	)
-	const [results, setResults] = useState([])
+	const [selectedSubcategories, setSelectedSubcategories] = useState<
+		Subcategory[]
+	>([])
+
 	const navigate = useNavigate()
 
 	// Обработка выбора подкатегорий
-	const handleSubcategorySelect = (subcategoryId: number) => {
+	const handleSubcategorySelect = (subcategory: Subcategory) => {
 		setSelectedSubcategories(
 			prev =>
-				prev.includes(subcategoryId)
-					? prev.filter(id => id !== subcategoryId) // Убираем, если уже выбрано
-					: [...prev, subcategoryId] // Добавляем, если ещё не выбрано
+				prev.some(item => item.id === subcategory.id)
+					? prev.filter(item => item.id !== subcategory.id) // Убираем, если уже выбран
+					: [...prev, subcategory] // Добавляем объект
 		)
 	}
 
-		const handleCreateRequest = () => {
-			if (selectedSubcategories.length === 0) {
-				alert('Выберите хотя бы одну категорию для создания заявки.')
-				return
-			}
-
-			// Переходим на страницу создания заявки с выбранными категориями
-			navigate('/create-request', { state: { selectedSubcategories } })
+	const handleCreateRequest = () => {
+		if (selectedSubcategories.length === 0) {
+			alert('Выберите хотя бы одну категорию для создания заявки.')
+			return
 		}
 
-	// Отправка выбранных категорий на сервер
-	const handleSearch = async () => {
-		try {
-			console.log('Выбранные подкатегории:', selectedSubcategories)
-			const response = await fetch('http://localhost:3005/search', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ subcategories: selectedSubcategories }),
-			})
+		console.log(
+			'Создание заявки с выбранными подкатегориями:',
+			selectedSubcategories
+		)
 
-			if (response.ok) {
-				const data = await response.json()
-				setResults(data)
-			} else {
-				console.error('Ошибка при поиске:', response.statusText)
-			}
-		} catch (error) {
-			console.error('Ошибка при выполнении запроса:', error)
-		}
+
+
+		// Переходим на страницу создания заявки с выбранными категориями
+		navigate('/create-request', { state: { selectedSubcategories } })
 	}
+
 
 	return (
 		<div>
-			<h1>Поиск объектов</h1>
+			<h1>Заявки</h1>
 			<CategorySelector
 				onSelect={handleSubcategorySelect}
 				selectedSubcategories={selectedSubcategories}
@@ -64,8 +55,7 @@ const SearchPage: React.FC = () => {
 				Создать заявку
 			</button>
 			<div>
-				<h2>Результаты поиска</h2>
-				<pre>{JSON.stringify(results, null, 2)}</pre>
+	
 			</div>
 		</div>
 	)

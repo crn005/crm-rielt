@@ -14,8 +14,8 @@ interface Category {
 }
 
 const CategorySelector: React.FC<{
-	onSelect: (subcategoryId: number) => void
-	selectedSubcategories: number[]
+	onSelect: (subcategory: Subcategory) => void
+	selectedSubcategories: Subcategory[]
 }> = ({ onSelect, selectedSubcategories }) => {
 	const [categories, setCategories] = useState<Category[]>([])
 
@@ -47,9 +47,11 @@ const CategorySelector: React.FC<{
 							<button
 								key={subcategory.id}
 								className={`primary-button my-2 mx-2 ${
-									selectedSubcategories.includes(subcategory.id) ? 'active' : ''
+									selectedSubcategories.some(item => item.id === subcategory.id)
+										? 'active'
+										: ''
 								}`}
-								onClick={() => onSelect(subcategory.id)}
+								onClick={() => onSelect(subcategory)}
 							>
 								{subcategory.name}
 							</button>
