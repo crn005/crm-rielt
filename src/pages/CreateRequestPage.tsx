@@ -1,11 +1,14 @@
 import { useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import DynamicForm from '../components/DynamicForm'
 
 const CreateRequestPage: React.FC = () => {
 	const location = useLocation()
 	const { selectedSubcategories } = location.state || {
 		selectedSubcategories: [],
 	}
+	 const [fields, setFields] = useState<Record<string, any>>({})
+		const [categoryId, setCategoryId] = useState<number | null>(null)
 
 	useEffect(() => {
 		if (!selectedSubcategories || selectedSubcategories.length === 0) {
@@ -27,6 +30,8 @@ const CreateRequestPage: React.FC = () => {
 				if (response.ok) {
 					const data = await response.json()
 					console.log('Полученные данные полей:', data)
+					setFields(data.fields) // JSON должен содержать объект `fields`
+					setCategoryId(data.categoryId) // JSON должен содержать `categoryId`
 					// Обработайте полученные данные здесь
 				} else {
 					console.error('Ошибка при получении полей:', response.statusText)
@@ -39,10 +44,15 @@ const CreateRequestPage: React.FC = () => {
 		fetchFields()
 	}, [selectedSubcategories])
 
+
+    if (!fields || !categoryId) {
+			return <div>Загрузка...</div>
+		}
+
 	return (
 		<div>
 			<h1>Создание заявки</h1>
-			{/* Ваш интерфейс для работы с заявкой */}
+			<DynamicForm fields={fields} categoryId={categoryId} />
 		</div>
 	)
 }

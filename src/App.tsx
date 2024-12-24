@@ -9,7 +9,7 @@ const App: React.FC = () => {
 		<Router>
 			<nav className='navbar'>
 				<Link to='/'>Главная</Link>
-				<Link to='/search'>Поиск объектов</Link>
+				<Link to='/search'>Заявки</Link>
 			</nav>
 			<Routes>
 				<Route path='/' element={<HomePage />} />
