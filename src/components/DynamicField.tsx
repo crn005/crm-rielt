@@ -108,7 +108,7 @@ const DynamicField: React.FC<DynamicFieldProps> = ({
 					</div>
 					<div>
 						<input
-							className='bw-20 px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 text-gray-700  transition-all duration-150 />'
+							className='/>'
 							type='text'
 							onChange={e => onChange(fieldKey, e.target.value)}
 						/>

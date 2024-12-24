@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import '../App.css'
 
 interface SearchFilters {
 	city?: string
@@ -36,6 +37,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ onSearch }) => {
 			<div className='filter-item'>
 				<label>Город:</label>
 				<input
+					className='edit-primary'
 					type='text'
 					name='city'
 					value={filters.city || ''}
@@ -45,6 +47,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ onSearch }) => {
 			<div className='filter-item'>
 				<label>Цена от:</label>
 				<input
+					className='edit-primary'
 					type='number'
 					name='priceMin'
 					value={filters.priceMin || ''}
@@ -54,6 +57,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ onSearch }) => {
 			<div className='filter-item'>
 				<label>Цена до:</label>
 				<input
+					className='edit-primary'
 					type='number'
 					name='priceMax'
 					value={filters.priceMax || ''}
@@ -63,6 +67,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ onSearch }) => {
 			<div className='filter-item'>
 				<label>Количество комнат:</label>
 				<input
+					className='edit-primary'
 					type='number'
 					name='rooms'
 					value={filters.rooms || ''}
